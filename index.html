@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>めんせつAI — AIが面接官。あなたが主役。</title>
+<meta name="description" content="AIが面接官になる転職面接練習アプリ。声で答えて、採点・模範回答・話し方分析まで。1日1回の練習が、内定への近道。">
+<meta property="og:title" content="めんせつAI — AIが面接官。あなたが主役。">
+<meta property="og:description" content="声で答える本格AI模擬面接。採点・AI模範回答・話し方分析つき。">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0c1a2e;
+  --navy-2: #13263f;
+  --blue: #2f6fed;
+  --blue-soft: #e8effd;
+  --ink: #1c2430;
+  --muted: #5d6b7e;
+  --paper: #f7f8f6;
+  --card: #ffffff;
+  --green: #2da66f;
+  --orange: #e8862f;
+  --radius: 18px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: "Noto Sans JP", sans-serif;
+  color: var(--ink);
+  background: var(--paper);
+  line-height: 1.8;
+}
+h1, h2, h3 { font-family: "Zen Kaku Gothic New", sans-serif; line-height: 1.4; }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
+section { padding: 72px 0; }
+
+/* Header */
+header {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(247,248,246,.92); backdrop-filter: blur(8px);
+  border-bottom: 1px solid #e6e8e4;
+}
+.nav { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+.brand { font-family: "Zen Kaku Gothic New", sans-serif; font-weight: 900; font-size: 1.15rem; color: var(--navy); text-decoration: none; }
+.brand span { color: var(--blue); }
+.nav a.cta-mini {
+  background: var(--navy); color: #fff; text-decoration: none;
+  padding: 8px 18px; border-radius: 999px; font-size: .85rem; font-weight: 700;
+}
+
+/* Hero */
+.hero { background: linear-gradient(168deg, var(--navy) 0%, var(--navy-2) 70%, #1b3a63 100%); color: #fff; padding: 84px 0 0; overflow: hidden; }
+.hero-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 32px; align-items: end; }
+.hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 900; letter-spacing: .02em; }
+.hero h1 em { font-style: normal; color: #7fa8f7; }
+.hero p.lead { margin: 20px 0 28px; color: #c2cede; font-size: 1.05rem; max-width: 30em; }
+.hero .badges { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; padding-bottom: 64px; }
+.store-badge {
+  display: inline-flex; flex-direction: column; justify-content: center;
+  border: 1px solid #6b7c95; border-radius: 12px; padding: 8px 20px;
+  color: #fff; text-decoration: none; line-height: 1.3;
+}
+.store-badge small { font-size: .65rem; color: #9fb0c6; }
+.store-badge b { font-size: 1.05rem; font-family: "Zen Kaku Gothic New", sans-serif; }
+.free-note { font-size: .8rem; color: #9fb0c6; }
+
+/* Phone mockup */
+.phone {
+  width: 290px; margin: 0 auto; background: #0a0a0c; border-radius: 38px; padding: 10px;
+  box-shadow: 0 24px 60px rgba(0,0,0,.45);
+  transform: translateY(24px);
+}
+.screen { background: #f4f5f7; border-radius: 30px; padding: 18px 14px 26px; }
+.screen .qhead { font-size: .65rem; color: #8a93a3; text-align: center; margin-bottom: 10px; }
+.bubble { max-width: 86%; padding: 10px 13px; border-radius: 14px; font-size: .78rem; line-height: 1.6; margin-bottom: 10px; }
+.bubble.ai { background: #fff; border: 1px solid #e3e6ec; border-bottom-left-radius: 4px; }
+.bubble.me { background: var(--blue); color: #fff; margin-left: auto; border-bottom-right-radius: 4px; }
+.scorecard { background: #fff; border: 1px solid #e3e6ec; border-radius: 14px; padding: 12px; display: flex; gap: 12px; align-items: center; }
+.ring { width: 54px; height: 54px; border-radius: 50%; flex-shrink: 0;
+  background: conic-gradient(var(--green) 0 78%, #e8ebe6 78% 100%);
+  display: grid; place-items: center; }
+.ring i { width: 40px; height: 40px; background: #fff; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-weight: 700; font-size: .85rem; color: var(--green); }
+.scorecard .meta { font-size: .68rem; color: #5d6b7e; }
+.scorecard .meta b { display: block; color: var(--ink); font-size: .78rem; }
+
+/* Problem */
+.problem { background: var(--card); }
+.kicker { color: var(--blue); font-weight: 700; font-size: .85rem; letter-spacing: .12em; }
+h2.title { font-size: clamp(1.5rem, 3.4vw, 2.1rem); font-weight: 900; margin: 8px 0 16px; color: var(--navy); }
+.problem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 32px; }
+.problem-card { background: var(--paper); border-radius: var(--radius); padding: 24px; }
+.problem-card .q { font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+.problem-card p { font-size: .9rem; color: var(--muted); }
+
+/* Features */
+.features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 36px; }
+.feature {
+  background: var(--card); border-radius: var(--radius); padding: 28px;
+  border: 1px solid #e9ebe7;
+}
+.feature .icon { font-size: 1.6rem; }
+.feature h3 { font-size: 1.1rem; margin: 10px 0 8px; color: var(--navy); }
+.feature p { font-size: .92rem; color: var(--muted); }
+.feature .tag { display: inline-block; background: var(--blue-soft); color: var(--blue); font-size: .7rem; font-weight: 700; padding: 2px 10px; border-radius: 999px; margin-top: 12px; }
+
+/* Steps */
+.steps { background: var(--navy); color: #fff; }
+.steps h2.title { color: #fff; }
+.steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 36px; }
+.step { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12); border-radius: var(--radius); padding: 26px; }
+.step .num { font-family: "Zen Kaku Gothic New", sans-serif; font-weight: 900; font-size: 1.6rem; color: #7fa8f7; }
+.step h3 { margin: 6px 0 8px; font-size: 1.05rem; }
+.step p { font-size: .88rem; color: #c2cede; }
+
+/* Pricing */
+.pricing-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 36px; max-width: 760px; margin-left: auto; margin-right: auto; }
+.plan { background: var(--card); border-radius: var(--radius); padding: 30px; border: 1px solid #e9ebe7; position: relative; }
+.plan.featured { border: 2px solid var(--blue); }
+.plan .pill { position: absolute; top: -13px; left: 24px; background: var(--blue); color: #fff; font-size: .72rem; font-weight: 700; padding: 3px 14px; border-radius: 999px; }
+.plan h3 { color: var(--navy); }
+.plan .price { font-family: "Zen Kaku Gothic New", sans-serif; font-size: 2rem; font-weight: 900; color: var(--navy); margin: 6px 0; }
+.plan .price small { font-size: .85rem; font-weight: 500; color: var(--muted); }
+.plan ul { list-style: none; margin-top: 14px; }
+.plan li { font-size: .9rem; padding: 6px 0 6px 26px; position: relative; color: var(--ink); }
+.plan li::before { content: "✓"; position: absolute; left: 2px; color: var(--green); font-weight: 700; }
+.plan .note { font-size: .75rem; color: var(--muted); margin-top: 14px; }
+
+/* FAQ */
+.faq details { background: var(--card); border-radius: 14px; border: 1px solid #e9ebe7; margin-bottom: 12px; padding: 0 22px; }
+.faq summary { cursor: pointer; font-weight: 700; padding: 18px 0; color: var(--navy); list-style: none; }
+.faq summary::after { content: "＋"; float: right; color: var(--blue); }
+.faq details[open] summary::after { content: "−"; }
+.faq details p { padding: 0 0 18px; font-size: .92rem; color: var(--muted); }
+
+/* CTA / Footer */
+.cta-final { background: linear-gradient(150deg, var(--blue) 0%, #1f54c4 100%); color: #fff; text-align: center; }
+.cta-final h2 { font-size: clamp(1.5rem, 3.4vw, 2.1rem); font-weight: 900; }
+.cta-final p { margin: 14px 0 28px; color: #d7e3fb; }
+footer { background: var(--navy); color: #8a99ad; font-size: .8rem; padding: 36px 0; }
+footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+footer a { color: #c2cede; text-decoration: none; }
+
+@media (max-width: 760px) {
+  section { padding: 56px 0; }
+  .hero-grid, .features-grid, .pricing-grid, .steps-grid, .problem-grid { grid-template-columns: 1fr; }
+  .hero { padding-top: 56px; }
+  .hero .badges { padding-bottom: 40px; }
+  .phone { transform: translateY(16px); width: 260px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#">めんせつ<span>AI</span></a>
+    <a class="cta-mini" href="#download">App Storeで近日公開</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <h1>AIが面接官。<br><em>あなたが主役。</em></h1>
+      <p class="lead">声で答える本格AI模擬面接。あなたの業界・職種・経験に合わせて深掘りされる質問に、本番さながらの緊張感で挑めます。終われば採点・模範回答・話し方分析まで、その場で。</p>
+      <div class="badges">
+        <a class="store-badge" href="#download" id="top-badge"><small>Coming soon on the</small><b> App Store</b></a>
+        <span class="free-note">無料で3回練習できます・登録不要</span>
+      </div>
+    </div>
+    <div class="phone" aria-hidden="true">
+      <div class="screen">
+        <div class="qhead">模擬面接 3/6問</div>
+        <div class="bubble ai">なぜ同業他社ではなく、当社を志望されたのですか？</div>
+        <div class="bubble me">はい、御社の◯◯事業に魅力を感じておりまして…前職で培った提案営業の経験を…</div>
+        <div class="bubble ai">具体的には、どのような成果につながりましたか？</div>
+        <div class="scorecard">
+          <div class="ring"><i>78</i></div>
+          <div class="meta"><b>論理性 21/25・具体性 17/25</b>話す速さ 318字/分 ・ 言い淀み 2回</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="problem">
+  <div class="wrap">
+    <p class="kicker">PROBLEM</p>
+    <h2 class="title">面接練習、誰に頼みますか？</h2>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <p class="q">「練習相手がいない」</p>
+        <p>在職中の転職活動は、誰にも言えないもの。家族や友人に面接官役は頼みづらく、エージェントの模擬面接は予約も気もつかう。</p>
+      </div>
+      <div class="problem-card">
+        <p class="q">「想定問答を読むだけ」</p>
+        <p>頭で答えを覚えても、声に出すと言葉が出てこない。面接は「知っているか」ではなく「話せるか」の勝負です。</p>
+      </div>
+      <div class="problem-card">
+        <p class="q">「何がダメか分からない」</p>
+        <p>面接に落ちても理由は教えてもらえません。自分の回答のどこが弱いのか、客観的に知る手段がない。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="kicker">FEATURES</p>
+    <h2 class="title">「話せるようになる」ための4つの機能</h2>
+    <div class="features-grid">
+      <div class="feature">
+        <div class="icon">🎙️</div>
+        <h3>声で答える、本格AI模擬面接</h3>
+        <p>面接官が音声で質問し、あなたはマイクで回答。回答が浅いと「具体的には？」と深掘りされます。業界×職種×経験年数×企業規模に合わせた、あなた専用の面接です。</p>
+        <span class="tag">4問・6問・10問・弱点集中モード</span>
+      </div>
+      <div class="feature">
+        <div class="icon">📝</div>
+        <h3>採点と、AI模範回答</h3>
+        <p>論理性・表現力・志望度・具体性の4項目で採点し、改善ポイントを提示。さらに各質問について「あなたのプロフィールならこう答える」というAI模範回答を、自分の回答と並べて読めます。</p>
+        <span class="tag">100点満点・総評つき</span>
+      </div>
+      <div class="feature">
+        <div class="icon">📊</div>
+        <h3>話し方の分析</h3>
+        <p>話す速さ（字/分）と「えー」「あの」などの言い淀みを自動計測。内容だけでなく、伝わり方まで磨けます。聞き取りやすい速さの目安つき。</p>
+        <span class="tag">録音はすべて端末内で処理</span>
+      </div>
+      <div class="feature">
+        <div class="icon">⚡</div>
+        <h3>3分でできる一問一答</h3>
+        <p>頻出質問6カテゴリから1問だけサッと練習。毎日の通勤前でも続けられて、連続練習日数（ストリーク）とスコア推移グラフが成長を見える化します。</p>
+        <span class="tag">回数無制限・毎日の習慣に</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="steps">
+  <div class="wrap">
+    <p class="kicker">HOW IT WORKS</p>
+    <h2 class="title">使い方は3ステップ</h2>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="num">01</div>
+        <h3>プロフィール設定</h3>
+        <p>業界・職種・経験年数・志望する企業規模を選ぶだけ。30秒で完了します。</p>
+      </div>
+      <div class="step">
+        <div class="num">02</div>
+        <h3>声で面接に挑む</h3>
+        <p>AI面接官の質問に、マイクに向かって答えます。短め4問なら約5分。</p>
+      </div>
+      <div class="step">
+        <div class="num">03</div>
+        <h3>振り返って、伸ばす</h3>
+        <p>採点・改善点・模範回答・話し方分析で弱点を把握。次は弱点集中モードで鍛えます。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="kicker">PRICING</p>
+    <h2 class="title">まず無料で3回。続けるなら1日33円。</h2>
+    <div class="pricing-grid">
+      <div class="plan">
+        <h3>無料</h3>
+        <p class="price">¥0</p>
+        <ul>
+          <li>本格模擬面接 3回</li>
+          <li>採点・改善ポイント</li>
+          <li>一問一答（AIフィードバック1日5回）</li>
+          <li>話し方分析</li>
+        </ul>
+        <p class="note">登録不要ですぐ試せます。</p>
+      </div>
+      <div class="plan featured">
+        <span class="pill">おすすめ</span>
+        <h3>プレミアム</h3>
+        <p class="price">¥980<small> / 月（毎月30回）</small></p>
+        <ul>
+          <li>本格模擬面接 毎月30回</li>
+          <li>AI模範回答 無制限</li>
+          <li>一問一答のAIフィードバック無制限</li>
+          <li>弱点集中モード・スコア推移</li>
+        </ul>
+        <p class="note">年額 ¥9,800（17%お得）。使い切っても追加チケットで続行できます。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="faq">
+  <div class="wrap" style="max-width:760px">
+    <p class="kicker">FAQ</p>
+    <h2 class="title">よくある質問</h2>
+    <details>
+      <summary>本当にAIと「会話」できるんですか？</summary>
+      <p>はい。台本の読み上げではなく、あなたの回答を理解した上で次の質問や深掘りが返ってきます。回答が抽象的だと「具体的なエピソードは？」と突っ込まれます。本番と同じです。</p>
+    </details>
+    <details>
+      <summary>音声は外部に保存されますか？</summary>
+      <p>音声の文字起こしと話し方分析はすべて端末内で行われ、音声データが外部に送信・保存されることはありません。採点に使うのは文字起こし後のテキストのみです。</p>
+    </details>
+    <details>
+      <summary>新卒の就活でも使えますか？</summary>
+      <p>転職向けに設計していますが、経験年数を「未経験・第二新卒」に設定すれば、ガクチカや志望動機など新卒面接に近い質問で練習できます。</p>
+    </details>
+    <details>
+      <summary>解約はいつでもできますか？</summary>
+      <p>はい。App Storeのサブスクリプション設定からいつでも解約できます。解約後も期間満了までは利用可能です。</p>
+    </details>
+  </div>
+</section>
+
+<section class="cta-final" id="download">
+  <div class="wrap">
+    <h2>面接の不安は、練習でしか消えない。</h2>
+    <p>App Storeで近日公開。まずは無料の3回から。</p>
+    <a class="store-badge" href="#"><small>Coming soon on the</small><b> App Store</b></a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 めんせつAI</span>
+    <span>
+      <a href="https://j2tcr4xfhn-ux.github.io/privacy/mensetsuai/">プライバシーポリシー</a>
+    </span>
+  </div>
+</footer>
+
+</body>
+</html>
