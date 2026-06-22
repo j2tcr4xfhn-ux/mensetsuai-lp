@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>めんせつAI for 就活塾 — 模擬面接を、AIが24時間ぶん肩代わり</title>
+<meta name="description" content="就活塾向けAI面接練習。塾コードを配るだけで塾生が24時間練習でき、講師は管理ダッシュボードで「誰を見るべきか」が一目でわかる。まずは1校1ヶ月の無料お試しから。">
+<meta property="og:title" content="めんせつAI for 就活塾">
+<meta property="og:description" content="模擬面接は講師の時間だけでは足りない。AIが24時間いつでも練習相手に。導入は塾コードを配るだけ・初月無料。">
+<meta property="og:type" content="website">
+<meta property="og:image" content="./assets/logo.png">
+<link rel="icon" href="./assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --indigo:#2F3AB2; --indigo-2:#4754d8; --green:#34C759; --green-d:#1f9e45; --coral:#FF6B5C;
+  --bg:#ffffff; --bg-soft:#f5f7fc; --ink:#1b2233; --muted:#5f6b85; --line:#e7ebf5;
+  --radius:18px; --shadow:0 12px 36px rgba(31,42,90,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:"Noto Sans JP",sans-serif;color:var(--ink);background:var(--bg);line-height:1.85;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:"Zen Kaku Gothic New",sans-serif;line-height:1.4;word-break:keep-all;overflow-wrap:anywhere;line-break:strict}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+.wrap{max-width:1060px;margin:0 auto;padding:0 20px}
+section{padding:78px 0;position:relative}
+.eyebrow{display:inline-block;font-size:.8rem;font-weight:700;letter-spacing:.06em;color:var(--green-d);background:rgba(52,199,89,.1);border:1px solid rgba(52,199,89,.25);padding:6px 14px;border-radius:999px;margin-bottom:18px}
+.btn{display:inline-flex;align-items:center;gap:8px;font-weight:700;border-radius:999px;padding:15px 26px;font-size:1rem;transition:transform .15s,box-shadow .15s,scale .15s;cursor:pointer;border:none}
+.btn-main{background:linear-gradient(135deg,var(--coral),#ff8a5c);color:#fff;box-shadow:0 10px 26px rgba(255,107,92,.32)}
+.btn-main:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(255,107,92,.42)}
+.btn-sub{background:#fff;color:var(--indigo);border:1.5px solid var(--line)}
+.btn-sub:hover{border-color:var(--indigo-2);background:var(--bg-soft)}
+.micro{font-size:.82rem;color:var(--muted);margin-top:14px}
+h2.title{font-size:clamp(1.5rem,3.4vw,2.1rem);font-weight:900;margin-bottom:12px}
+.lead{color:var(--muted);font-size:1.02rem;max-width:680px}
+.grid{display:grid;gap:18px}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g2{grid-template-columns:repeat(2,1fr)}
+.card{padding:26px;background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.card h3{font-size:1.1rem;margin-bottom:8px}
+.card p{color:var(--muted);font-size:.94rem}
+.ico{width:46px;height:46px;border-radius:13px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:14px}
+.ico svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ico-indigo{background:rgba(47,58,178,.1);color:var(--indigo)}
+.ico-green{background:rgba(52,199,89,.12);color:var(--green-d)}
+.ico-coral{background:rgba(255,107,92,.12);color:var(--coral)}
+.num{display:inline-flex;width:38px;height:38px;border-radius:12px;align-items:center;justify-content:center;font-weight:900;background:linear-gradient(135deg,var(--indigo),var(--indigo-2));color:#fff;margin-bottom:12px}
+b,strong{color:var(--ink);font-weight:700}
+.soft{background:var(--bg-soft)}
+.sec-art{max-width:280px;margin:0 auto}
+/* topbar */
+.topbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.topbar .row{display:flex;align-items:center;justify-content:space-between;height:64px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{width:30px;height:30px;border-radius:8px}
+.brand .name{font-family:"Zen Kaku Gothic New";font-weight:900;font-size:1.1rem}
+.brand .sub{color:var(--muted);font-weight:500;font-size:.78rem}
+.navlinks{display:flex;gap:22px;align-items:center}
+.navlinks a{color:var(--muted);font-size:.9rem}
+.navlinks a:hover{color:var(--ink)}
+/* hero */
+.hero{background:radial-gradient(900px 460px at 88% -8%,rgba(71,84,216,.1),transparent 60%),radial-gradient(700px 420px at 0% 30%,rgba(52,199,89,.08),transparent 55%),var(--bg);padding-top:60px}
+.hero h1{font-size:clamp(2rem,5vw,3rem);font-weight:900;letter-spacing:-.01em}
+.hero h1 .hl{color:var(--indigo)}
+.hero .lead{margin:20px 0 28px;font-size:1.08rem}
+.cta-row{display:flex;gap:14px;flex-wrap:wrap}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+.hero-art{background:linear-gradient(160deg,#eef1ff,#f5fff8);border:1px solid var(--line);border-radius:26px;padding:18px;box-shadow:var(--shadow)}
+.mock{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;margin-top:14px;box-shadow:0 6px 18px rgba(31,42,90,.06)}
+.mock .l{display:flex;justify-content:space-between;font-size:.82rem;color:var(--muted);margin-top:10px}
+.mock .bar{height:9px;border-radius:6px;background:#eef1f8;margin:6px 0 2px;overflow:hidden}
+.mock .bar i{display:block;height:100%;border-radius:6px}
+.pill{display:inline-block;font-size:.72rem;padding:3px 10px;border-radius:999px;margin:8px 4px 0 0}
+.pill-warn{background:rgba(255,107,92,.12);color:#d9402f;border:1px solid rgba(255,107,92,.3)}
+.pill-ok{background:rgba(52,199,89,.12);color:var(--green-d);border:1px solid rgba(52,199,89,.3)}
+/* pricing */
+.price-card{padding:30px;background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.price-card.free{border:2px solid var(--green);box-shadow:0 0 0 5px rgba(52,199,89,.08),var(--shadow)}
+.price-tag{font-size:2rem;font-weight:900;color:var(--ink);margin:8px 0}
+.price-card ul{list-style:none;margin-top:14px}
+.price-card li{padding:7px 0 7px 26px;position:relative;color:var(--muted);font-size:.94rem}
+.price-card li:before{content:"✓";position:absolute;left:0;color:var(--green-d);font-weight:900}
+/* faq */
+details{border-bottom:1px solid var(--line);padding:18px 4px}
+summary{cursor:pointer;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary:after{content:"+";color:var(--green-d);font-weight:900}
+details[open] summary:after{content:"−"}
+details p{color:var(--muted);margin-top:12px;font-size:.94rem}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+/* final */
+.final{background:linear-gradient(135deg,var(--indigo),var(--indigo-2));border-radius:28px;padding:48px 28px 56px;text-align:center;color:#fff;box-shadow:var(--shadow)}
+.final img.trophy{width:110px;margin:0 auto 6px;filter:drop-shadow(0 8px 20px rgba(0,0,0,.2))}
+.final .eyebrow{color:#fff;background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.3)}
+.final h2{font-size:clamp(1.6rem,3.6vw,2.3rem);font-weight:900;margin-bottom:10px;color:#fff}
+.final .lead{color:rgba(255,255,255,.9)}
+.final .btn-main{background:#fff;color:var(--coral)}
+.final .micro{color:rgba(255,255,255,.8)}
+/* form */
+.form{padding:30px;background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.form label{display:block;font-size:.85rem;color:var(--muted);margin:14px 0 6px}
+.form input,.form textarea{width:100%;background:var(--bg-soft);border:1px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--ink);font-family:inherit;font-size:.95rem}
+.form input:focus,.form textarea:focus{outline:none;border-color:var(--green)}
+footer{border-top:1px solid var(--line);padding:40px 0;color:var(--muted);font-size:.85rem;background:var(--bg-soft)}
+footer a{color:var(--muted);text-decoration:underline;margin-right:16px}
+.center{text-align:center}
+/* scroll reveal（translate）＋ hover拡大（scale）。別プロパティで干渉なし */
+.reveal,.card,.price-card,.sec-art{transition:opacity .7s cubic-bezier(.2,.7,.2,1),translate .7s cubic-bezier(.2,.7,.2,1),scale .22s ease,box-shadow .22s ease}
+.reveal{opacity:0;translate:0 24px}
+.reveal.in{opacity:1;translate:0 0}
+.card:hover,.price-card:hover{scale:1.03;box-shadow:0 18px 46px rgba(31,42,90,.15)}
+.sec-art:hover{scale:1.04}
+.btn:hover{scale:1.02}
+@media(prefers-reduced-motion:reduce){
+  .reveal{opacity:1!important;translate:none!important}
+  .card:hover,.price-card:hover,.sec-art:hover,.btn:hover{scale:1}
+}
+.f-brand{display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:12px}
+.f-brand img{width:24px;height:24px;border-radius:6px}
+@media(max-width:820px){
+  .hero-grid{grid-template-columns:1fr}
+  .g3,.g2{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr 1fr}
+  .navlinks a:not(.btn){display:none}
+  .sec-art{max-width:220px;margin-top:24px}
+  section{padding:56px 0}
+  .hero h1{font-size:1.7rem}
+  .topbar .brand .sub{display:none}
+  .navlinks .btn{padding:8px 14px;font-size:.82rem}
+}
+</style>
+</head>
+<body>
+
+<!-- icon sprite -->
+<svg style="display:none" aria-hidden="true">
+  <symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="ic-eyeoff" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 5.1A9 9 0 0 1 21 12a16 16 0 0 1-2.3 3.2M6.6 6.6A16 16 0 0 0 3 12a9 9 0 0 0 12 6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
+  <symbol id="ic-flag" viewBox="0 0 24 24"><path d="M5 21V4"/><path d="M5 4h12l-2 4 2 4H5"/></symbol>
+  <symbol id="ic-bell" viewBox="0 0 24 24"><path d="M6 9a6 6 0 0 1 12 0c0 6 2 7 2 7H4s2-1 2-7"/><path d="M10 20a2 2 0 0 0 4 0"/></symbol>
+  <symbol id="ic-chart" viewBox="0 0 24 24"><path d="M4 4v16h16"/><path d="M7 14l3-4 3 3 4-6"/></symbol>
+  <symbol id="ic-sort" viewBox="0 0 24 24"><path d="M4 6h13M4 12h9M4 18h5"/><path d="M17 9V4l3 3M17 4l-3 3" transform="translate(0,8)"/></symbol>
+  <symbol id="ic-download" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M8 11l4 4 4-4"/><path d="M4 19h16"/></symbol>
+  <symbol id="ic-ticket" viewBox="0 0 24 24"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2 2 2 0 0 0 0 4 2 2 0 0 1-2 2H5a2 2 0 0 1-2-2 2 2 0 0 0 0-4z"/><path d="M12 6v12" stroke-dasharray="2 3"/></symbol>
+  <symbol id="ic-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></symbol>
+  <symbol id="ic-doc" viewBox="0 0 24 24"><path d="M7 3h7l5 5v13a0 0 0 0 1 0 0H7a0 0 0 0 1 0 0z"/><path d="M14 3v5h5"/><path d="M9 14l2 2 4-4"/></symbol>
+  <symbol id="ic-wave" viewBox="0 0 24 24"><path d="M4 12h2M8 8v8M12 5v14M16 9v6M20 12h0"/></symbol>
+  <symbol id="ic-userx" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M17 8l4 4M21 8l-4 4"/></symbol>
+  <symbol id="ic-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.5"/></symbol>
+</svg>
+
+<!-- Topbar -->
+<div class="topbar"><div class="wrap row">
+  <div class="brand">
+    <img src="./assets/logo.png" alt="めんせつAI">
+    <div><span class="name">めんせつAI</span> <span class="sub">for 就活塾</span></div>
+  </div>
+  <nav class="navlinks">
+    <a href="#feature">機能</a>
+    <a href="#price">料金</a>
+    <a href="#flow">導入の流れ</a>
+    <a href="#contact" class="btn btn-main" style="padding:9px 18px;font-size:.88rem">無料お試しを相談する</a>
+  </nav>
+</div></div>
+
+<!-- S1 Hero -->
+<section class="hero"><div class="wrap hero-grid">
+  <div>
+    <span class="eyebrow">就活塾向け ・ 無料お試し 先着3校</span>
+    <h1>模擬面接は、<wbr>講師の時間だけでは<wbr>足りない。<br><span class="hl">AIが、24時間<wbr>いつでも<wbr>練習相手に。</span></h1>
+    <p class="lead">塾コードを配るだけで、塾生はスマホ（iPhone）で面接練習。講師は<b>「誰を見るべきか」</b>がダッシュボードで一目でわかる。</p>
+    <div class="cta-row">
+      <a href="#contact" class="btn btn-main">無料お試しを相談する →</a>
+      <a href="#feature" class="btn btn-sub">3分でわかる機能を見る</a>
+    </div>
+    <p class="micro">1校1ヶ月・無料・自動課金なし ／ アプリは公開準備中（公開と同時にお試し開始・先行受付中）</p>
+  </div>
+  <div class="hero-art">
+    <img src="./assets/hero.png" alt="AIと面接練習する就活生">
+    <div class="mock" aria-hidden="true">
+      <div style="font-size:.78rem;color:var(--muted)">塾管理ダッシュボード（イメージ）</div>
+      <div class="l"><span>練習量</span><span style="color:var(--green-d)">好調</span></div>
+      <div class="bar"><i style="width:72%;background:linear-gradient(90deg,var(--green),#7ee59a)"></i></div>
+      <div class="l"><span>論理性スコア</span><span>54</span></div>
+      <div class="bar"><i style="width:54%;background:linear-gradient(90deg,var(--indigo-2),#8b96ff)"></i></div>
+      <div class="l"><span>要フォロー</span><span style="color:var(--coral)">3名</span></div>
+      <div class="bar"><i style="width:34%;background:linear-gradient(90deg,var(--coral),#ff9f80)"></i></div>
+      <div>
+        <span class="pill pill-ok">A.さん 好調</span>
+        <span class="pill pill-warn">B.さん 要フォロー</span>
+        <span class="pill pill-warn">C.さん 未練習</span>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<!-- S2 課題 -->
+<section class="soft"><div class="wrap">
+  <span class="eyebrow">こんな状態になっていませんか</span>
+  <h2 class="title">模擬面接は「講師の時間」で頭打ちになる。</h2>
+  <p class="lead">模擬面接は1人あたり60〜90分。塾生が増えるほど、講師の時間がそのまま上限になります。「全員に十分な練習をさせたいのに、手が回らない」——これは指導力の問題ではなく、<b>仕組みの問題</b>です。</p>
+  <div class="grid g3" style="margin-top:28px">
+    <div class="card"><div class="ico ico-coral"><svg><use href="#ic-clock"/></svg></div><h3>練習量が足りない</h3><p>講師1人で全塾生の模擬面接は物理的に不可能。</p></div>
+    <div class="card"><div class="ico ico-coral"><svg><use href="#ic-eyeoff"/></svg></div><h3>誰が伸び悩むか見えない</h3><p>感覚頼みで、フォローが後手に。</p></div>
+    <div class="card"><div class="ico ico-coral"><svg><use href="#ic-flag"/></svg></div><h3>他塾と差別化できない</h3><p>「面接対策」はどこも掲げていて、違いが伝わらない。</p></div>
+  </div>
+</div></section>
+
+<!-- S3 解決 -->
+<section><div class="wrap">
+  <div class="hero-grid" style="align-items:center">
+    <div>
+      <span class="eyebrow">めんせつAI が肩代わりします</span>
+      <h2 class="title">24時間、塾生の面接練習相手に。導入は塾コードを配るだけ。</h2>
+      <p class="lead">塾生はアプリで<b>14業界・100以上の職種</b>（自由入力も可）の本番さながらの面接を、毎日でも。AIが<b>内容と話し方の両面</b>を採点し、弱点を覚えて次に活かします。講師がやることは、発行された塾コードを配るだけ。<b>名簿入力も、講師研修も、数分で完了</b>します。</p>
+    </div>
+    <div><img src="./assets/practice.png" alt="AIと面接練習" class="sec-art"></div>
+  </div>
+  <div class="grid g3" style="margin-top:28px">
+    <div class="card"><div class="num">1</div><h3>塾コードを発行</h3><p>アプリ内・即日。</p></div>
+    <div class="card"><div class="num">2</div><h3>塾生に配布</h3><p>生徒はコードを入れて練習開始。</p></div>
+    <div class="card"><div class="num">3</div><h3>ダッシュボードで確認</h3><p>翌月、続けるか判断。</p></div>
+  </div>
+</div></section>
+
+<!-- S4 差別化 -->
+<section id="feature" class="soft"><div class="wrap">
+  <div class="hero-grid" style="align-items:center">
+    <div>
+      <span class="eyebrow">これが、他のAI面接アプリとの違い</span>
+      <h2 class="title">「誰を見るべきか」が、一目でわかる。</h2>
+      <p class="lead">塾生一覧で、各自の<b>練習量・スコア推移・ステータス（好調／要フォロー／未練習）</b>がひと目で。限られた指導時間を、<b>本当に手をかけるべき塾生</b>に集中できます。</p>
+    </div>
+    <div><img src="./assets/roster.png" alt="塾生の管理ダッシュボード" class="sec-art"></div>
+  </div>
+  <div class="grid g3" style="margin-top:28px">
+    <div class="card"><div class="ico ico-coral"><svg><use href="#ic-bell"/></svg></div><h3>要フォロー人数を自動表示</h3><p>放置されている塾生をゼロに。</p></div>
+    <div class="card"><div class="ico ico-indigo"><svg><use href="#ic-chart"/></svg></div><h3>個別のスコア推移グラフ</h3><p>伸びと停滞が見える。</p></div>
+    <div class="card"><div class="ico ico-indigo"><svg><use href="#ic-sort"/></svg></div><h3>ステータスで並び替え</h3><p>未練習・要フォローを上に。</p></div>
+    <div class="card"><div class="ico ico-indigo"><svg><use href="#ic-download"/></svg></div><h3>CSV書き出し</h3><p>面談・三者面談の資料に。</p></div>
+    <div class="card"><div class="ico ico-green"><svg><use href="#ic-ticket"/></svg></div><h3>塾コードをアプリ内で発行</h3><p>管理画面の行き来なし。</p></div>
+    <div class="card"><div class="ico ico-green"><svg><use href="#ic-shield"/></svg></div><h3>本人同意の上で管理者のみ閲覧</h3><p>安心して任せられる。</p></div>
+  </div>
+</div></section>
+
+<!-- S5 採点 -->
+<section><div class="wrap">
+  <div class="hero-grid" style="align-items:center">
+    <div>
+      <span class="eyebrow">AIが見ているのは、ここ</span>
+      <h2 class="title">内容と話し方を、両面から採点。だから指導の精度が上がる。</h2>
+      <div class="grid g2" style="margin-top:8px">
+        <div class="card"><div class="ico ico-green"><svg><use href="#ic-doc"/></svg></div><h3 style="color:var(--green-d)">内容</h3><p>論理性 ／ 表現力 ／ 志望度 ／ 具体性</p></div>
+        <div class="card"><div class="ico ico-coral"><svg><use href="#ic-wave"/></svg></div><h3 style="color:var(--coral)">話し方</h3><p>話速 ／ 抑揚 ／ 言い淀み ／ 表情</p></div>
+      </div>
+      <p class="lead" style="margin-top:18px">AIが基礎を反復で固め、講師は<b>仕上げ</b>に集中。基礎練習はAI、最後のひと押しは人。役割分担で、指導の価値はむしろ上がります。</p>
+    </div>
+    <div><img src="./assets/celebrate.png" alt="練習で伸びる就活生" class="sec-art"></div>
+  </div>
+</div></section>
+
+<!-- S6 データ管理 -->
+<section class="soft"><div class="wrap">
+  <span class="eyebrow">生徒の情報を、預けられるか</span>
+  <h2 class="title">データは、本人同意の上で管理者だけが見られます。</h2>
+  <div class="grid g3" style="margin-top:28px">
+    <div class="card"><div class="ico ico-green"><svg><use href="#ic-shield"/></svg></div><h3>本人同意ベースの共有</h3><p>個人情報保護法の第三者提供同意UIに対応。</p></div>
+    <div class="card"><div class="ico ico-indigo"><svg><use href="#ic-userx"/></svg></div><h3>本名を出さない運用</h3><p>表示名は出席番号／ニックネーム推奨。</p></div>
+    <div class="card"><div class="ico ico-indigo"><svg><use href="#ic-target"/></svg></div><h3>自塾の範囲に限定</h3><p>管理者が見られるのは自塾の塾生のみ。</p></div>
+  </div>
+  <p class="micro">アカウント削除・利用規約・プライバシーポリシー整備済み。</p>
+</div></section>
+
+<!-- S7 料金 -->
+<section id="price"><div class="wrap">
+  <span class="eyebrow">まずはリスクゼロで</span>
+  <h2 class="title">最初の1校は、無料お試し。</h2>
+  <div class="grid g2" style="margin-top:28px">
+    <div class="price-card free">
+      <div style="color:var(--green-d);font-weight:700">無料お試し</div>
+      <div class="price-tag">1校 / 1ヶ月 ¥0</div>
+      <ul>
+        <li>全機能・人数上限まで利用可</li>
+        <li>費用0円・自動課金なし</li>
+        <li>1ヶ月後に「続ける／やめる」を判断</li>
+        <li>終了時に勝手に課金は一切しません</li>
+      </ul>
+    </div>
+    <div class="price-card">
+      <div style="color:var(--muted);font-weight:700">正規プラン（お試し後）</div>
+      <div class="price-tag" style="font-size:1.4rem">塾の規模に合わせた定額</div>
+      <ul>
+        <li>ライト（塾生〜10名）：月¥9,800</li>
+        <li>スタンダード（〜30名）：月¥19,800</li>
+        <li>〜50名：月¥30,000</li>
+        <li>50名を超える場合は ＋¥500/名・月</li>
+        <li>最終価格は商談時にご提案</li>
+      </ul>
+    </div>
+  </div>
+  <p class="micro">無料お試しは先着3校。条件＝1校・1ヶ月・自動課金なし。</p>
+</div></section>
+
+<!-- S8 導入の流れ -->
+<section id="flow" class="soft"><div class="wrap">
+  <span class="eyebrow">最短その日から</span>
+  <h2 class="title">問い合わせから、塾生の練習開始まで。</h2>
+  <div class="steps" style="margin-top:28px">
+    <div class="card"><div class="num">1</div><h3>問い合わせ</h3><p>このページのフォーム。</p></div>
+    <div class="card"><div class="num">2</div><h3>塾コード発行</h3><p>お申し込み後すぐ発行（オンライン完結）。</p></div>
+    <div class="card"><div class="num">3</div><h3>塾生に配布</h3><p>コードを渡すだけ。</p></div>
+    <div class="card"><div class="num">4</div><h3>翌月、判断</h3><p>実績を見て決める。</p></div>
+  </div>
+</div></section>
+
+<!-- S9 FAQ -->
+<section><div class="wrap" style="max-width:780px">
+  <span class="eyebrow">よくあるご質問</span>
+  <h2 class="title">導入前に、気になること。</h2>
+  <div style="margin-top:18px">
+    <details><summary>講師の手間が増えませんか？</summary><p>増えません。塾コードを配るだけで、名簿入力も研修も不要です。練習はAIが担い、講師は要フォローの塾生に集中できます。</p></details>
+    <details><summary>生徒の個人情報が心配です。</summary><p>データは本人同意の上で管理者のみが閲覧。表示名は出席番号／ニックネーム推奨で、本名を出さずに運用できます。</p></details>
+    <details><summary>機械の採点で大丈夫ですか？</summary><p>AIは内容（論理性・具体性ほか）と話し方（話速・抑揚ほか）を両面で採点します。基礎の反復はAI、最終仕上げは講師、という役割分担を想定しています。</p></details>
+    <details><summary>ITが苦手でも導入できますか？</summary><p>はい。発行された塾コードを配るだけです。資料とメールで初期設定までご案内します（ご希望ならオンラインでもサポート）。</p></details>
+    <details><summary>無料お試しの後、勝手に課金されませんか？</summary><p>されません。自動課金はなく、1ヶ月後にご自身で「続ける／やめる」を選べます。</p></details>
+    <details><summary>何業界・何職種に対応していますか？</summary><p>14業界・100以上の職種に対応し、業界・職種は自由入力もできます（例: 半導体プロセスエンジニア 等）。</p></details>
+    <details><summary>対応端末は？Androidの生徒も使えますか？</summary><p>生徒さんのアプリは現在iPhone（iOS 17以上）に対応しています。Android対応はご要望を見て検討中です。講師用ダッシュボードはWebのためMac/Windowsどちらでもご利用いただけます。</p></details>
+    <details><summary>いつから始められますか？</summary><p>アプリは現在公開準備中（App Store審査中）です。公開と同時に塾コードを発行してお試しを開始いただけます。先行のご相談を承っており、公開直後に最優先でご案内します。講師ダッシュボードのデモは今すぐご覧いただけます。</p></details>
+  </div>
+</div></section>
+
+<!-- S10 + contact -->
+<section id="contact"><div class="wrap">
+  <div class="final">
+    <img src="./assets/trophy.png" alt="" class="trophy">
+    <span class="eyebrow">無料お試し 先着3校</span>
+    <h2>講師の時間を、本当に必要な塾生へ。</h2>
+    <p class="lead" style="margin:0 auto 22px">まずは1校・1ヶ月、無料で。導入は塾コードを配るだけ。</p>
+    <a href="mailto:cielo.contact.jp@icloud.com?subject=【めんせつAI】無料お試しの相談&body=塾名：%0D%0Aご担当者名：%0D%0A塾生のおおよその人数：%0D%0Aご質問・ご希望：%0D%0A" class="btn btn-main" onclick="track('cta_click')">無料お試しを相談する →</a>
+    <p class="micro">1校1ヶ月・無料・自動課金なし ／ アプリは公開準備中（公開と同時にお試し開始・先行受付中）</p>
+  </div>
+
+  <div class="form" style="max-width:560px;margin:34px auto 0">
+    <h3 style="margin-bottom:6px">お問い合わせフォーム</h3>
+    <p style="color:var(--muted);font-size:.88rem">送信ボタンでメールが立ち上がります。内容を確認のうえ送信してください。</p>
+    <form onsubmit="return submitInquiry(event)">
+      <label>塾名 *</label><input id="f_school" required>
+      <label>ご担当者名 *</label><input id="f_name" required>
+      <label>メールアドレス *</label><input id="f_email" type="email" required>
+      <label>塾生のおおよその人数</label><input id="f_count">
+      <label>ご質問・ご希望</label><textarea id="f_msg" rows="3"></textarea>
+      <button type="submit" class="btn btn-main" style="margin-top:18px;width:100%">この内容で問い合わせる →</button>
+    </form>
+  </div>
+</div></section>
+
+<footer><div class="wrap center">
+  <div class="f-brand"><img src="./assets/logo.png" alt=""><span style="font-weight:700;color:var(--ink)">めんせつAI</span></div>
+  <div style="margin-bottom:14px">
+    <a href="https://j2tcr4xfhn-ux.github.io/privacy/mensetsuai/">プライバシーポリシー</a>
+    <a href="https://j2tcr4xfhn-ux.github.io/privacy/mensetsuai/terms.html">利用規約</a>
+    <a href="https://j2tcr4xfhn-ux.github.io/privacy/mensetsuai/tokushoho.html">特定商取引法に基づく表記</a>
+  </div>
+  <div>© 2026 めんせつAI</div>
+  <div style="margin-top:8px;font-size:.78rem">アクセス解析は流入元（ドメイン単位）の集計のみ。トラッキングCookieは使用しません。</div>
+</div></footer>
+
+<script>
+// 計測サーバーのURL（例 'https://analytics.example.com'）。空ならconsoleのみ送信しない
+var ANALYTICS_BASE = '';
+// 自分（オーナー）を計測から除外: LPを ?owner=1 で一度開くと、そのブラウザは以後カウントしない
+try{ if(new URLSearchParams(location.search).get('owner')==='1'){ localStorage.setItem('ma_owner','1'); } }catch(e){}
+function track(ev){
+  try{
+    console.log('[track]', ev);
+    if(!ANALYTICS_BASE) return;
+    try{ if(localStorage.getItem('ma_owner')==='1') return; }catch(e){}
+    var s=''; try{ s=new URLSearchParams(location.search).get('s')||''; }catch(e){}
+    var payload=JSON.stringify({event:ev, ref:document.referrer, s:s, lp:'b2b'});
+    var url=ANALYTICS_BASE.replace(/\/+$/,'')+'/api/track';
+    if(navigator.sendBeacon){ navigator.sendBeacon(url, new Blob([payload],{type:'text/plain;charset=UTF-8'})); }
+    else { fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:payload,keepalive:true,mode:'cors'}); }
+  }catch(e){}
+}
+track('lp_view');
+
+// スクロール連動フェードイン（ふわっと表示）
+(function(){
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce || !('IntersectionObserver' in window)) return;
+  var sel = 'section:not(.hero) .eyebrow, section:not(.hero) > .wrap > h2.title, section:not(.hero) > .wrap > .lead, .card, .price-card, .sec-art, .final, .form, details';
+  var els = Array.prototype.slice.call(document.querySelectorAll(sel));
+  els.forEach(function(el){ el.classList.add('reveal'); });
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+  els.forEach(function(el){ io.observe(el); });
+})();
+function submitInquiry(e){
+  e.preventDefault();
+  track('cta_click');
+  var s=document.getElementById('f_school').value;
+  var n=document.getElementById('f_name').value;
+  var em=document.getElementById('f_email').value;
+  var c=document.getElementById('f_count').value;
+  var m=document.getElementById('f_msg').value;
+  var body='塾名：'+s+'\n担当者：'+n+'\nメール：'+em+'\n人数：'+c+'\n内容：'+m;
+  track('inquiry_submit');
+  window.location.href='mailto:cielo.contact.jp@icloud.com?subject='+encodeURIComponent('【めんせつAI】無料お試しの相談 '+s)+'&body='+encodeURIComponent(body);
+  return false;
+}
+</script>
+</body>
+</html>
